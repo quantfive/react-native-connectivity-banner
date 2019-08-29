@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
-import { injectIntl } from 'react-intl';
 import NetInfo from '@react-native-community/netinfo';
 
 const { height, width } = Dimensions.get('window');
@@ -69,16 +68,10 @@ class ConnectivityBanner extends React.Component {
     let { intl } = this.props;
     let { isConnected, lowConnectivity } = this.state;
     if (!isConnected) {
-      return intl.formatMessage({ 
-        id: 'no_internet_connection',
-        defaultMessage: 'No Internet Connection'
-      })
+      return (this.props.messages && this.props.messages.notConnected) || 'No Internet Connection';
     }
     if (lowConnectivity) {
-      return intl.formatMessage({
-        id: 'low_connectivity',
-        defaultMessage: 'Low Connectivity'
-      })
+      return (this.props.messages && this.props.messages.lowConnectivity) || 'Low Connectivity';
     }
   }
 
@@ -109,7 +102,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width,
     position: 'absolute',
-    top: height > 811 ? 30 : 0,
+    top: height >= 812 ? 30 : 0,
   },
   orangeBackground: {
     backgroundColor: 'orange'
@@ -122,4 +115,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default injectIntl(ConnectivityBanner);
+export default ConnectivityBanner;
