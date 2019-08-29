@@ -1,6 +1,6 @@
 {
   "name": "@quantfive/react-native-connectivity-banner",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A component that displays a banner when it detects no or slow connection",
   "main": "index.js",
   "scripts": {
