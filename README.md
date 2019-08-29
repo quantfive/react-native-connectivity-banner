@@ -10,8 +10,13 @@
 
 ### Install the Package
 Use NPM or Yarn
-```sh yarn add @quantfive/react-native-connectivity-banner```
-```sh npm install --save @quantfive/react-native-connectivity-banner```
+```sh 
+yarn add @quantfive/react-native-connectivity-banner
+```
+
+```sh 
+npm install --save @quantfive/react-native-connectivity-banner
+```
 
 ### Usage
 1. Require @quantfive/react-native-connectivity-banner after installation
