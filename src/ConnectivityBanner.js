@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, Dimensions, StyleSheet } from 'react-native';
+import { Animated, View, Text, Dimensions, StyleSheet } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
 const { height, width } = Dimensions.get('window');
-const DEFAULT_INTERVAL = 1000
+const DEFAULT_INTERVAL = 2000
 
 class ConnectivityBanner extends React.Component {
   constructor(props) {
@@ -15,7 +15,9 @@ class ConnectivityBanner extends React.Component {
         effectiveType: ''
       },
       lowConnectivity: false,
-      intervalPing: null
+      intervalPing: null,
+      fadeAnim: new Animated.Value(0),
+      show: false
     }
   }
 
@@ -25,7 +27,7 @@ class ConnectivityBanner extends React.Component {
     let intervalPing = setInterval(this.checkConnectivity, this.props.interval ? this.props.interval : DEFAULT_INTERVAL)
     this.setState({ intervalPing });
   }
-
+  
   componentWillUnmount() {
     NetInfo.removeEventListener('connectionChange', this.updateConnectionState);
     clearInterval(this.state.intervalPing);
@@ -43,22 +45,19 @@ class ConnectivityBanner extends React.Component {
   }
 
   updateConnectionState = (connectionState) => {
+    let { lowConnectivity, isConnected } = this.state;
     let { effectiveType, type } = connectionState;
-    let lowConnectivity = false;
-    let isConnected = true;
     if (effectiveType === '2g' || effectiveType === '3g') {
       lowConnectivity = true
     }
-    if (type === 'none') {
-      isConnected = false
-    }
     this.setState({ 
-      isConnected,
+      isConnected: type === 'none' ? false : isConnected,
       connectionInfo: {
         type,
         effectiveType
       },
-      lowConnectivity
+      lowConnectivity,
+      show: !isConnected ? true : lowConnectivity ? true : false
     })
   }
 
@@ -73,24 +72,44 @@ class ConnectivityBanner extends React.Component {
     }
   }
 
+  showAnimation = () => {
+    Animated.timing(
+      this.state.fadeAnim,
+      {
+        toValue: 40,
+        duration: 300
+      }
+    ).start();
+  }
+
+  hideAnimation = () => {
+    Animated.timing(
+      this.state.fadeAnim,
+      {
+        toValue: 0,
+        duration: 300
+      }
+    ).start()
+  }
+
   render() {
-    let { isConnected, lowConnectivity } = this.state;
+    let { lowConnectivity, show, fadeAnim } = this.state;
     let status = this.statusMessage();
+    show ? this.showAnimation() : this.hideAnimation();
+
     return (
-      <View style={[
-        styles.bannerContainer, 
-        lowConnectivity && styles.orangeBackground, 
-        this.props.styleOverride && this.props.styleOverride, 
-        isConnected 
-          ? lowConnectivity 
-            ? null 
-            : styles.hide 
-          : styles.hide,
-      ]}>
+      <Animated.View 
+        style={[
+          { height: fadeAnim },
+          styles.bannerContainer, 
+          lowConnectivity && styles.orangeBackground, 
+          this.props.styleOverride ? this.props.styleOverride : styles.absolute,
+        ]}
+      >
         <Text style={styles.bannerText}>
           {status}
         </Text>
-      </View>
+      </Animated.View>
     )
   }
 }
@@ -98,11 +117,13 @@ class ConnectivityBanner extends React.Component {
 const styles = StyleSheet.create({
   bannerContainer: {
     backgroundColor :'rgba(181, 36, 36, 1)',
-    height: 40,
+    // height: 40,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     width,
+  },
+  styles: {
     position: 'absolute',
     top: height >= 812 ? 30 : 0,
   },
