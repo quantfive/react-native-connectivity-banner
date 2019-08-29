@@ -19,15 +19,13 @@ class ConnectivityBanner extends React.Component {
     }
   }
 
-
-
   componentDidMount = async () => {
     NetInfo.addEventListener('connectionChange', this.updateConnectionState);
     await this.checkConnectivity();
     let intervalPing = setInterval(this.checkConnectivity, this.props.interval ? this.props.interval : DEFAULT_INTERVAL)
     this.setState({ intervalPing });
   }
-  
+
   componentWillUnmount() {
     NetInfo.removeEventListener('connectionChange', this.updateConnectionState);
     clearInterval(this.state.intervalPing);
@@ -83,7 +81,11 @@ class ConnectivityBanner extends React.Component {
         styles.bannerContainer, 
         lowConnectivity && styles.orangeBackground, 
         this.props.styleOverride && this.props.styleOverride, 
-        isConnected ? lowConnectivity ? null : styles.hide : styles.hide,
+        isConnected 
+          ? lowConnectivity 
+            ? null 
+            : styles.hide 
+          : styles.hide,
       ]}>
         <Text style={styles.bannerText}>
           {status}
