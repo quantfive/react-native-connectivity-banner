@@ -20,7 +20,9 @@ npm install --save @quantfive/react-native-connectivity-banner
 
 ### Usage
 1. Require @quantfive/react-native-connectivity-banner after installation
-```js import { ConnectivityBanner } from '@quantfive/react-native-connectivity-banner'```
+```js 
+import { ConnectivityBanner } from '@quantfive/react-native-connectivity-banner'
+```
 
 2. Insert the component into your code
 ```js
