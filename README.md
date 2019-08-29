@@ -39,5 +39,5 @@ render() {
 | Option  |Type   |Description   |
 | ------------ | ------------ | ------------ |
 |interval   | Integer  | In milliseconds, determines how often the component will check the state of the device's connection. Defaults to 2000ms.  |
-|messages   |Object   | ```js { notConnected: String, lowConnectivity: String}``` Customize the message you want to display to users |
+|messages   |Object   | `{ notConnected: String, lowConnectivity: String}` Customize the message you want to display to users |
 |styleOverride   |  Object | Pass a style object to override or customize component's style   |
