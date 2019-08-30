@@ -1,5 +1,5 @@
-#React Native Connectivity Banner
-A simple React Native Component that leverages [@react-native-community/netinfo](http://https://github.com/react-native-community/react-native-netinfo "@react-native-community/netinfo") to display a banner alerting users when no or slow connection is detected.
+# React Native Connectivity Banner
+* A simple React Native Component that leverages [@react-native-community/netinfo](http://https://github.com/react-native-community/react-native-netinfo "@react-native-community/netinfo") to display a banner alerting users when no or slow connection is detected.
 
 ### Demo
 #### For 2G & 3G Connection
@@ -10,15 +10,30 @@ A simple React Native Component that leverages [@react-native-community/netinfo]
 
 ### Install the Package
 Use NPM or Yarn
-`yarn add @quantfive/react-native-connectivity-banner`
-`npm install --save @quantfive/react-native-connectivity-banner`
+```sh 
+yarn add @quantfive/react-native-connectivity-banner
+```
+
+```sh 
+npm install --save @quantfive/react-native-connectivity-banner
+```
 
 ### Usage
 1. Require @quantfive/react-native-connectivity-banner after installation
-`import { ConnectivityBanner } from '@quantfive/react-native-connectivity-banner'`
+```js 
+import { ConnectivityBanner } from '@quantfive/react-native-connectivity-banner'
+```
 
 2. Insert the component into your code
-`<ConnectivityBanner />`
+```js
+render() {
+  return (
+    <View> 
+      <ConnectivityBanner />
+    </View>
+  )
+}
+ ```
 
 ### Main Options
 | Option  |Type   |Description   |
