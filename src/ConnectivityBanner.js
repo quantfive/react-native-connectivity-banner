@@ -1,9 +1,9 @@
 import React from 'react';
 import { Animated, View, Text, Dimensions, StyleSheet } from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
 
 const { height, width } = Dimensions.get('window');
-const DEFAULT_INTERVAL = 2000
+const DEFAULT_INTERVAL = 3000;
+const PING_URL = 'https://clients3.google.com/generate_204';
 
 class ConnectivityBanner extends React.Component {
   constructor(props) {
@@ -22,42 +22,51 @@ class ConnectivityBanner extends React.Component {
   }
 
   componentDidMount = async () => {
-    NetInfo.addEventListener('connectionChange', this.updateConnectionState);
-    await this.checkConnectivity();
     let intervalPing = setInterval(this.checkConnectivity, this.props.interval ? this.props.interval : DEFAULT_INTERVAL)
     this.setState({ intervalPing });
   }
   
   componentWillUnmount() {
-    NetInfo.removeEventListener('connectionChange', this.updateConnectionState);
     clearInterval(this.state.intervalPing);
   }
 
-  checkConnectivity = () => {
-    return NetInfo.isConnected.fetch().then(async isConnected => {
-      if (isConnected !== this.state.isConnected) {
-        await this.setState({ isConnected })
+  checkConnectivity = async () => {
+    let isConnected = false;
+    setTimeout(() => {
+      if (!isConnected) {
+        this.setState({ 
+          show: true,
+          isConnected,
+        })
       }
-      NetInfo.getConnectionInfo().then(connectionInfo => {
-        this.updateConnectionState(connectionInfo)
+    }, 2000);
+    let start = performance.now();
+    fetch(PING_URL)
+    .then(async res => {
+      let end = performance.now();
+      isConnected = true;
+      this.updateConnectionState(start, end)
+    })
+    .catch(err => {
+      this.setState({ 
+        show: true,
+        isConnected: false,
       })
     })
   }
 
-  updateConnectionState = (connectionState) => {
-    let { lowConnectivity, isConnected } = this.state;
-    let { effectiveType, type } = connectionState;
-    if (effectiveType === '2g' || effectiveType === '3g') {
-      lowConnectivity = true
+  updateConnectionState = (start, end) => {
+    let time = end - start;
+    let lowConnectivity = false;
+    let show = false;
+    if (time >= 1000) {
+      lowConnectivity = true;
+      show = true;
     }
-    this.setState({ 
-      isConnected: type === 'none' ? false : isConnected,
-      connectionInfo: {
-        type,
-        effectiveType
-      },
+    this.setState({
+      isConnected: true,
       lowConnectivity,
-      show: !isConnected ? true : lowConnectivity ? true : false
+      show,
     })
   }
 
@@ -93,7 +102,7 @@ class ConnectivityBanner extends React.Component {
   }
 
   render() {
-    let { lowConnectivity, show, fadeAnim } = this.state;
+    let { isConnected, lowConnectivity, show, fadeAnim } = this.state;
     let status = this.statusMessage();
     show ? this.showAnimation() : this.hideAnimation();
 
@@ -102,7 +111,8 @@ class ConnectivityBanner extends React.Component {
         style={[
           { height: fadeAnim },
           styles.bannerContainer, 
-          lowConnectivity && styles.orangeBackground, 
+          (isConnected && lowConnectivity) && styles.orangeBackground, 
+          !show && styles.hide,
           this.props.styleOverride ? this.props.styleOverride : styles.absolute,
         ]}
       >
@@ -117,11 +127,11 @@ class ConnectivityBanner extends React.Component {
 const styles = StyleSheet.create({
   bannerContainer: {
     backgroundColor :'rgba(181, 36, 36, 1)',
-    // height: 40,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     width,
+    marginTop: height > 811 ? 33 : 0,
   },
   styles: {
     position: 'absolute',
@@ -134,7 +144,8 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   hide: {
-    display: 'none'
+    display: 'none',
+    marginTop: 0
   }
 })
 
