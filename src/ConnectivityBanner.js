@@ -85,7 +85,7 @@ class ConnectivityBanner extends React.Component {
     Animated.timing(
       this.state.fadeAnim,
       {
-        toValue: 40,
+        toValue: height > 811 ? 40 : 50,
         duration: 300
       }
     ).start();
@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width,
     marginTop: height > 811 ? 33 : 0,
+    paddingTop: height > 811 ? 0 : 8
   },
   styles: {
     position: 'absolute',
