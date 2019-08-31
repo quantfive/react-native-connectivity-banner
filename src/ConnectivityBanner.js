@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width,
     marginTop: height > 811 ? 33 : 0,
-    paddingTop: height > 811 ? 0 : 8
+    paddingTop: height > 811 ? 0 : 10
   },
   styles: {
     position: 'absolute',
