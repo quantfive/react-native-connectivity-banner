@@ -40,10 +40,10 @@ class ConnectivityBanner extends React.Component {
         })
       }
     }, 2000);
-    let start = performance.now();
+    let start = Date.now();
     fetch(PING_URL)
     .then(async res => {
-      let end = performance.now();
+      let end = Date.now();
       isConnected = true;
       this.updateConnectionState(start, end)
     })
