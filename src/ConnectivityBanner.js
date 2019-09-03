@@ -17,7 +17,8 @@ class ConnectivityBanner extends React.Component {
       lowConnectivity: false,
       intervalPing: null,
       fadeAnim: new Animated.Value(0),
-      show: false
+      show: false,
+
     }
   }
 
@@ -85,7 +86,7 @@ class ConnectivityBanner extends React.Component {
     Animated.timing(
       this.state.fadeAnim,
       {
-        toValue: height > 811 ? 40 : 50,
+        toValue: height > 811 ? 73 : 50,
         duration: 300
       }
     ).start();
@@ -112,8 +113,8 @@ class ConnectivityBanner extends React.Component {
           { height: fadeAnim },
           styles.bannerContainer, 
           (isConnected && lowConnectivity) && styles.orangeBackground, 
-          !show && styles.hide,
           this.props.styleOverride ? this.props.styleOverride : styles.absolute,
+          show && styles.show
         ]}
       >
         <Text style={styles.bannerText}>
@@ -131,10 +132,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     width,
-    marginTop: height > 811 ? 33 : 0,
-    paddingTop: height > 811 ? 0 : 10
   },
-  styles: {
+  absolute: {
     position: 'absolute',
     top: height >= 812 ? 30 : 0,
   },
@@ -144,9 +143,8 @@ const styles = StyleSheet.create({
   bannerText: {
     color: '#fff'
   },
-  hide: {
-    display: 'none',
-    marginTop: 0
+  show: {
+    paddingTop: height > 811 ? 30 : 10
   }
 })
 
